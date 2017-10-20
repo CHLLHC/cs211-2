@@ -58,15 +58,27 @@ void testLapack(double *a, double *b, int n) {
 }
 
 int main() {
-	double *a, *b;
+	//double *a, *b;
 	int n = 3;
 	srand(419);
-	a = new double[n*n]{ 1, 2, 1,
+	//a = new double[n*n];
+	//b = new double[n];
+
+	double  a[9] =
+	{
+		1, 2, 1,
 		2, 1, 1,
-		3, 1, 1 };
-	b = new double[n] {1,
+		3, 1, 1
+	};
+
+	double b[3] =
+	{
 		1,
-		1};
+		1,
+		1
+	};
+
+
 
 	/*for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
