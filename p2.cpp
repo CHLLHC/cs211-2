@@ -6,8 +6,6 @@
 #include <cstdlib>
 #include <cstring>
 
-
-
 //HDdiff is from Stackoverflow
 struct timespec HDdiff(struct timespec start, struct timespec end)
 {
@@ -23,8 +21,6 @@ struct timespec HDdiff(struct timespec start, struct timespec end)
 	return temp;
 }
 
-
-
 void testLapack(double *a, double *b, int n) {
 	struct timespec begin, end, diff;
 	int lda = n, info = 3;
@@ -32,7 +28,8 @@ void testLapack(double *a, double *b, int n) {
 
 	clock_gettime(CLOCK_MONOTONIC, &begin);
 
-	LAPACK_dgetrf(&n, &n, a, &lda, ipiv, &info);
+	info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, a, lda, ipiv);
+	//LAPACK_dgetrf(&n, &n, a, &lda, ipiv, &info);
 
 	for (int i = 0; i < n; ++i) {
 		double tmp = b[ipiv[i] - 1];
@@ -60,10 +57,6 @@ void testLapack(double *a, double *b, int n) {
 	printf("LAPACK, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
 }
 
-
-
-
-
 int main() {
 	double *a, *b;
 	int n = 10;
@@ -79,12 +72,13 @@ int main() {
 	}
 
 	double *ai, *bi;
-	ai = new double[n*n];
-	bi = new double[n];
-	memcpy(ai, a, n*n*sizeof(double));
-	memcpy(bi, b, n*sizeof(double));
+	al = new double[n*n];
+	bl = new double[n];
+	memcpy(al, a, n*n * sizeof(double));
+	memcpy(bl, b, n * sizeof(double));
 
-	testLapack(ai, bi, n);
+	testLapack(al, bl, n);
+	testMine(a, b, n);
 
 
 	delete[] a;
