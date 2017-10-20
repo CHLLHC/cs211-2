@@ -45,14 +45,15 @@ void testLapack(double *a, double *b, int n) {
 	char     UPLO = 'L';
 	char    TRANS = 'N';
 	char     DIAG = 'U';
+	int m = 1;
 	double alpha = 1;
 
 	// forward  L(Ux) = B => y = Ux
-	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &n, &alpha, a, &n, b, &n);
+	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &m, &alpha, a, &n, b, &n);
 	UPLO = 'U';
 	DIAG = 'N';
 	// backward Ux = y
-	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &n, &alpha, a, &n, b, &n);
+	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &m, &alpha, a, &n, b, &n);
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	diff = HDdiff(begin, end);
@@ -80,8 +81,8 @@ int main() {
 	double *ai, *bi;
 	ai = new double[n*n];
 	bi = new double[n];
-	memcpy(ai, a, n*n * sizeof(double));
-	memcpy(bi, b, n * sizeof(double));
+	memcpy(ai, a, n*n*sizeof(double));
+	memcpy(bi, b, n*sizeof(double));
 
 	testLapack(ai, bi, n);
 
