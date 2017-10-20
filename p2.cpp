@@ -59,17 +59,21 @@ void testLapack(double *a, double *b, int n) {
 
 int main() {
 	double *a, *b;
-	int n = 10;
+	int n = 3;
 	srand(419);
-	a = new double[n*n];
-	b = new double[n];
+	a = new double[n*n]{ 1, 2, 1,
+		2, 1, 1,
+		3, 1, 1 };
+	b = new double[n] {1,
+		1,
+		1};
 
-	for (int i = 0; i < n; ++i) {
+	/*for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			a[i*n + j] = (double)((rand() << 15) | rand()) / (double)rand();
 		}
 		b[i] = (double)((rand() << 15) | rand()) / (double)rand();
-	}
+	}*/
 
 	double *al, *bl;
 	al = new double[n*n];
@@ -78,13 +82,20 @@ int main() {
 	memcpy(bl, b, n * sizeof(double));
 
 	testLapack(al, bl, n);
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			std::cout << a[i*n + j] << " ";
+		}
+		std::cout << std::endl;
+	}
+
 	//testMine(a, b, n);
 
 
 	delete[] a;
 	delete[] b;
-	delete[] ai;
-	delete[] bi;
+	delete[] al;
+	delete[] bl;
 
 	return 0;
 }
