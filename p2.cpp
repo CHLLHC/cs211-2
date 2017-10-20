@@ -1,6 +1,6 @@
 #include <iostream>
-#include <lapacke.h>
-#include <blas.h>
+#include "lapacke.h"
+#include "blas.h"
 
 
 int main() {
