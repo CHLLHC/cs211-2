@@ -96,7 +96,7 @@ int main() {
 	testLapack(al, bl, n);
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
-			std::cout << a[i*n + j] << " ";
+			std::cout << al[i*n + j] << " ";
 		}
 		std::cout << std::endl;
 	}
@@ -104,8 +104,8 @@ int main() {
 	//testMine(a, b, n);
 
 
-	delete[] a;
-	delete[] b;
+	//delete[] a;
+	//delete[] b;
 	delete[] al;
 	delete[] bl;
 
