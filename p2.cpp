@@ -35,8 +35,8 @@ void testLapack(double *a, double *b, int n) {
 	LAPACK_dgetrf(&n, &n, a, &lda, ipiv, &info);
 
 	for (int i = 0; i < n; ++i) {
-		double tmp = b[iptv[i] - 1];
-		b[iptv[i] - 1] = b[i];
+		double tmp = b[ipiv[i] - 1];
+		b[ipiv[i] - 1] = b[i];
 		b[i] = tmp;
 	}
 
