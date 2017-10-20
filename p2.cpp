@@ -48,11 +48,11 @@ void testLapack(double *a, double *b, int n) {
 	double alpha = 1;
 
 	// forward  L(Ux) = B => y = Ux
-	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &n, &alpha, A, &n, B, &n);
+	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &n, &alpha, a, &n, b, &n);
 	UPLO = 'U';
 	DIAG = 'N';
 	// backward Ux = y
-	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &n, &alpha, A, &n, B, &n);
+	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &n, &alpha, a, &n, b, &n);
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	diff = HDdiff(begin, end);
