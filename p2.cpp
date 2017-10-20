@@ -71,14 +71,14 @@ int main() {
 		b[i] = (double)((rand() << 15) | rand()) / (double)rand();
 	}
 
-	double *ai, *bi;
+	double *al, *bl;
 	al = new double[n*n];
 	bl = new double[n];
 	memcpy(al, a, n*n * sizeof(double));
 	memcpy(bl, b, n * sizeof(double));
 
 	testLapack(al, bl, n);
-	testMine(a, b, n);
+	//testMine(a, b, n);
 
 
 	delete[] a;
