@@ -29,14 +29,34 @@ void testLapack(double *a, double *b, int n) {
 	struct timespec begin, end, diff;
 	int lda = n, info = 3;
 	int *ipiv = new int[n];
-	
+
 	clock_gettime(CLOCK_MONOTONIC, &begin);
 
 	LAPACK_dgetrf(&n, &n, a, &lda, ipiv, &info);
 
+	for (int i = 0; i < n; ++i) {
+		double tmp = b[iptv[i] - 1];
+		b[iptv[i] - 1] = b[i];
+		b[i] = tmp;
+	}
+
+
+	char     SIDE = 'L';
+	char     UPLO = 'L';
+	char    TRANS = 'N';
+	char     DIAG = 'U';
+	double alpha = 1;
+
+	// forward  L(Ux) = B => y = Ux
+	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &n, &alpha, A, &n, B, &n);
+	UPLO = 'U';
+	DIAG = 'N';
+	// backward Ux = y
+	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &n, &alpha, A, &n, B, &n);
+
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	diff = HDdiff(begin, end);
-	printf("Blocked cache and register ijk, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
+	printf("LAPACK, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
 }
 
 
@@ -52,7 +72,7 @@ int main() {
 
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
-			a[i*n+j] = (double)((rand() << 15) | rand()) / (double)rand();
+			a[i*n + j] = (double)((rand() << 15) | rand()) / (double)rand();
 		}
 		b[i] = (double)((rand() << 15) | rand()) / (double)rand();
 	}
