@@ -63,7 +63,7 @@ int main() {
 	memcpy(ai, a, n*n * sizeof(double));
 	memcpy(bi, b, n * sizeof(double));
 
-
+	testLapack(ai, bi, n);
 
 
 	delete[] a;
