@@ -51,7 +51,7 @@ int main() {
 	b = new double[n];
 
 	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++i) {
+		for (int j = 0; j < n; ++j) {
 			a[i*n+j] = (double)((rand() << 15) | rand()) / (double)rand();
 		}
 		b[i] = (double)((rand() << 15) | rand()) / (double)rand();
