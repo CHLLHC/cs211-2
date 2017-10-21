@@ -127,7 +127,7 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 		std::cout << "ERROR, ONLY ACCEPT N TYPE MATRIX" << std::endl;
 		return -1;
 	}
-	if ((nrhs != -1) || (lda != ldb) || (lda != n)) {
+	if ((nrhs != 1) || (lda != ldb) || (lda != n)) {
 		std::cout << "ERROR, NOT SUPPORTED." << std::endl;
 		return -1;
 	}
