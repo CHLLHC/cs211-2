@@ -177,16 +177,14 @@ int main() {
 	memcpy(bl, b, n * sizeof(double));
 
 	testLapack(al, bl, n);
-	for (int i = 0; i < n; ++i) {
-		std::cout << bl[i] << " ";
-	}
-	std::cout << std::endl;
-
 	testMine(a, b, n);
+
+	double sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
-		std::cout << b[i] << " ";
+		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
 	}
-	std::cout << std::endl;
+	double norm = sqrt(sumOfSquare);
+	std::cout << "The norm of difference is " << std::scientific << norm << std::endl;
 
 	delete[] a;
 	delete[] b;
