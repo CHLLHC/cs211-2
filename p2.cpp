@@ -135,7 +135,7 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 	//Forward Substitution
 	//Preprocess
 	for (int i = 0; i < n; ++i) {
-		int temp = b[ipiv[i] - 1];
+		double temp = b[ipiv[i] - 1];
 		b[ipiv[i] - 1] = b[i];
 		b[i] = temp;
 	}
