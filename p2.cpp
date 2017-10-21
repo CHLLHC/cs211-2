@@ -157,34 +157,18 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 
 
 int main() {
-	//double *a, *b;
+	double *a, *b;
 	int n = 3;
 	srand(419);
-	//a = new double[n*n];
-	//b = new double[n];
+	a = new double[n*n];
+	b = new double[n];
 
-	double  a[9] =
-	{
-		1, 2, 1,
-		2, 1, 1,
-		3, 1, 1
-	};
-
-	double b[3] =
-	{
-		1,
-		1,
-		1
-	};
-
-
-
-	/*for (int i = 0; i < n; ++i) {
+	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			a[i*n + j] = (double)((rand() << 15) | rand()) / (double)rand();
 		}
 		b[i] = (double)((rand() << 15) | rand()) / (double)rand();
-	}*/
+	}
 
 	double *al, *bl;
 	al = new double[n*n];
@@ -204,8 +188,8 @@ int main() {
 	}
 	std::cout << std::endl;
 
-	//delete[] a;
-	//delete[] b;
+	delete[] a;
+	delete[] b;
 	delete[] al;
 	delete[] bl;
 
