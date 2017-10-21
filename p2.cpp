@@ -7,8 +7,9 @@
 #include <cstring>
 #include <cmath>
 
+//declearation
 int mydgetrf(int row, int col, double *a, int lda, int *ipiv);
-
+int int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *b, int ldb);
 
 //HDdiff is from Stackoverflow
 struct timespec HDdiff(struct timespec start, struct timespec end)
@@ -37,12 +38,10 @@ void testLapack(double *a, double *b, int n) {
 		std::cout << "LAPACKE_dgetrf FAILED" << std::endl;
 		return;
 	}
-	for (int i = 0; i < n; ++i) {
-		std::cout << ipiv[i] << " " << std::endl;
-	}
+
 	char TRANS = 'N';
 	int m = 1;
-	//info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
+	info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
 	if (info != 0) {
 		std::cout << "LAPACKE_dgetrs FAILED" << std::endl;
 	}
@@ -61,17 +60,15 @@ void testMine(double *a, double *b, int n) {
 
 	info = mydgetrf(n, n, a, lda, ipiv);
 	if (info != 0) {
-		std::cout << "LAPACKE_dgetrf FAILED" << std::endl;
+		std::cout << "mydgetrf FAILED" << std::endl;
 		return;
 	}
-	for (int i = 0; i < n; ++i) {
-		std::cout << ipiv[i] << " " << std::endl;
-	}
+	
 	char TRANS = 'N';
 	int m = 1;
-	//info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
+	info = mydtrsm(TRANS, n, m, a, n, ipiv, b, n);
 	if (info != 0) {
-		std::cout << "LAPACKE_dgetrs FAILED" << std::endl;
+		std::cout << "mydtrsm FAILED" << std::endl;
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
@@ -103,14 +100,9 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 			return -1;
 		}
 		else {
-			ipiv[i] = maxp+1;
+			//save pivoting infomation in LAPACK formate
+			ipiv[i] = maxp + 1;
 			if (maxp != i) {
-				//save pivoting infomation
-				/*
-				int temp = ipiv[i];
-				ipiv[i] = ipiv[maxp];
-				ipiv[maxp] = temp;
-				*/
 				//swap rows
 				for (int j = 0; j < n; ++j) {
 					double tmp = a[j*n + i];
@@ -125,6 +117,40 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 				a[k*n + j] -= a[i*n + j] * a[k*n + i];
 			}
 		}
+	}
+	return 0;
+}
+
+//signiture based on LAPACKE_dgetrs
+int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *b, int ldb) {
+	if (trans != 'N') {
+		std::cout << "ERROR, ONLY ACCEPT N TYPE MATRIX" << std::endl;
+		return -1;
+	}
+	if ((nrhs != -1) || (lda != ldb) || (lda != n)) {
+		std::cout << "ERROR, NOT SUPPORTED." << std::endl;
+		return -1;
+	}
+
+	//Forward Substitution
+	//Preprocess
+	for (int i = 0; i < n; ++i) {
+		int temp = b[ipiv[i] - 1];
+		b[ipiv[i] - 1] = b[i];
+		b[i] = temp;
+	}
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < i; ++j) {
+			b[i] -= b[j] * a[j*n + i];
+		}
+	}
+
+	//Backward Substitution
+	for (int i = n - 1; n >= 0; --i) {
+		for (int j = i + 1; j < n; j++) {
+			b[i] -= b[j] * a[j*n + i];
+		}
+		b[i] /= a[i*n + i];
 	}
 	return 0;
 }
@@ -167,15 +193,16 @@ int main() {
 	memcpy(bl, b, n * sizeof(double));
 
 	testLapack(al, bl, n);
-	/*for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			std::cout << al[i*n + j] << " ";
-		}
-		std::cout << std::endl;
-	}*/
+	for (int i = 0; i < n; ++i) {
+		std::cout << bl[i] << " ";
+	}
+	std::cout << std::endl;
 
 	testMine(a, b, n);
-
+	for (int i = 0; i < n; ++i) {
+		std::cout << b[i] << " ";
+	}
+	std::cout << std::endl;
 
 	//delete[] a;
 	//delete[] b;
