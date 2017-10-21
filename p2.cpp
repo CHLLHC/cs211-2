@@ -146,7 +146,7 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 	}
 
 	//Backward Substitution
-	for (int i = n - 1; n >= 0; --i) {
+	for (int i = n - 1; i >= 0; --i) {
 		for (int j = i + 1; j < n; j++) {
 			b[i] -= b[j] * a[j*n + i];
 		}
