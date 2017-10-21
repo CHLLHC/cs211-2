@@ -44,7 +44,7 @@ void testLapack(double *a, double *b, int n) {
 		}
 		std::cout << std::endl;
 	}
-
+	char TRANS = 'N';
 	int m = 1;
 	info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
 	if (info != 0) {
@@ -74,20 +74,27 @@ void testMine(double *a, double *b, int n) {
 		}
 		std::cout << std::endl;
 	}
+	char TRANS = 'N';
 	int m = 1;
-	info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
+	//info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
 	if (info != 0) {
 		std::cout << "LAPACKE_dgetrs FAILED" << std::endl;
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	diff = HDdiff(begin, end);
-	printf("LAPACK, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
+	printf("MyFunction, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
 }
 
 
 
 int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
+
+	int n = row;
+	if (n != col) {
+		std::cout << "ERROR, ONLY SUPPORT REGTANGLE MATRIX" << std::endl;
+		return -1;
+	}
 
 	for (int i = 0; i < n; i++) {
 		ipiv[i] = i + 1;
@@ -98,7 +105,7 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 		int maxp = i;
 		int max = abs(a[i*n + i]);
 		for (int t = i + 1; t < n; ++t) {
-			if (abs(A[i*n+t]) > max) {
+			if (abs(A[i*n + t]) > max) {
 				maxp = t;
 				max = abs(a[i*n + t]);
 			}
