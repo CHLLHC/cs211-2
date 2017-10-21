@@ -88,9 +88,7 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 		std::cout << "ERROR, ONLY SUPPORT REGTANGLE MATRIX" << std::endl;
 		return -1;
 	}
-	for (int i = 0; i < n; i++) {
-		ipiv[i] = i + 1;
-	}
+	
 	for (int i = 0; i < n - 1; ++i) {
 		int maxp = i;
 		int max = abs(a[i*n + i]);
@@ -105,6 +103,7 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 			return -1;
 		}
 		else {
+			ipiv[i] = maxp;
 			if (maxp != i) {
 				//save pivoting infomation
 				int temp = ipiv[i];
