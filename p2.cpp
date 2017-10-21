@@ -166,6 +166,7 @@ int main(int argc, char *argv[]) {
 		case 'n':
 			n = atoi(optarg);
 			break;
+		case '?':
 		default:
 			std::cerr << "Usage run -n <size>" << std::endl;
 			return -1;
