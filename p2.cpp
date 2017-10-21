@@ -1,6 +1,7 @@
 #include <iostream>
 #include "lapacke.h"
 #include "blas.h"
+#include <unistd.h>
 #include <ctime>
 #include <cstdio>
 #include <cstdlib>
@@ -63,7 +64,7 @@ void testMine(double *a, double *b, int n) {
 		std::cout << "mydgetrf FAILED" << std::endl;
 		return;
 	}
-	
+
 	char TRANS = 'N';
 	int m = 1;
 	info = mydtrsm(TRANS, n, m, a, n, ipiv, b, n);
@@ -156,9 +157,21 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 }
 
 
-int main() {
+int main(int argc, char *argv[]) {
 	double *a, *b;
-	int n = 3;
+	int n, opt;
+
+	while ((opt = getopt(argc, argv, "n:")) != -1) {
+		switch (opt) {
+		case 'n':
+			n = atoi(optarg);
+			break;
+		default:
+			std::cerr << "Usage run -n <size>" << std::endl;
+			return -1;
+		}
+	}
+
 	srand(419);
 	a = new double[n*n];
 	b = new double[n];
