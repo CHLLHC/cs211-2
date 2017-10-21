@@ -9,7 +9,7 @@
 
 //declearation
 int mydgetrf(int row, int col, double *a, int lda, int *ipiv);
-int int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *b, int ldb);
+int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *b, int ldb);
 
 //HDdiff is from Stackoverflow
 struct timespec HDdiff(struct timespec start, struct timespec end)
