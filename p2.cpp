@@ -5,6 +5,10 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
+
+int mydgetrf(int row, int col, double *a, int lda, int *ipiv);
+
 
 //HDdiff is from Stackoverflow
 struct timespec HDdiff(struct timespec start, struct timespec end)
@@ -29,42 +33,105 @@ void testLapack(double *a, double *b, int n) {
 	clock_gettime(CLOCK_MONOTONIC, &begin);
 
 	info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, a, lda, ipiv);
-	//LAPACK_dgetrf(&n, &n, a, &lda, ipiv, &info);
-	if (info!=0) {
+	if (info != 0) {
 		std::cout << "LAPACKE_dgetrf FAILED" << std::endl;
+		return;
 	}
-	/*
+
 	for (int i = 0; i < n; ++i) {
-		double tmp = b[ipiv[i] - 1];
-		b[ipiv[i] - 1] = b[i];
-		b[i] = tmp;
+		for (int j = 0; j < n; ++j) {
+			std::cout << a[j*n + i] << " ";
+		}
+		std::cout << std::endl;
 	}
-	*/
 
-	char     SIDE = 'L';
-	char     UPLO = 'L';
-	char    TRANS = 'N';
-	char     DIAG = 'U';
 	int m = 1;
-	double alpha = 1;
-
-	// forward  L(Ux) = B => y = Ux
 	info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
-	if (info!=0) {
-		std::cout << "First LAPACKE_dgetrs FAILED" << std::endl;
+	if (info != 0) {
+		std::cout << "LAPACKE_dgetrs FAILED" << std::endl;
 	}
-	//dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &m, &alpha, a, &n, b, &n);
-	
-	
-	UPLO = 'U';
-	DIAG = 'N';
-	// backward Ux = y
-	//dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &m, &alpha, a, &n, b, &n);
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	diff = HDdiff(begin, end);
 	printf("LAPACK, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
 }
+
+void testMine(double *a, double *b, int n) {
+	struct timespec begin, end, diff;
+	int lda = n, info = 3;
+	int *ipiv = new int[n];
+
+	clock_gettime(CLOCK_MONOTONIC, &begin);
+
+	info = mydgetrf(n, n, a, lda, ipiv);
+	if (info != 0) {
+		std::cout << "LAPACKE_dgetrf FAILED" << std::endl;
+		return;
+	}
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			std::cout << a[j*n + i] << " ";
+		}
+		std::cout << std::endl;
+	}
+	int m = 1;
+	info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
+	if (info != 0) {
+		std::cout << "LAPACKE_dgetrs FAILED" << std::endl;
+	}
+
+	clock_gettime(CLOCK_MONOTONIC, &end);
+	diff = HDdiff(begin, end);
+	printf("LAPACK, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
+}
+
+
+
+int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
+
+	for (int i = 0; i < n; i++) {
+		ipiv[i] = i + 1;
+	}
+
+
+	for (int i = 0; i < n - 1; ++i) {
+		int maxp = i;
+		int max = abs(a[i*n + i]);
+		for (int t = i + 1; t < n; ++t) {
+			if (abs(A[i*n+t]) > max) {
+				maxp = t;
+				max = abs(a[i*n + t]);
+			}
+		}
+		if (max == 0) {
+			std::cout << "LUfactoration failed: coefficient matrix is singular" << std::endl;
+			return -1;
+		}
+		else {
+			if (maxp != i) {
+				//save pivoting infomation
+				int temp = ipiv[i];
+				ipiv[i] = ipiv[maxp];
+				ipiv[maxp] = temp;
+				//swap rows
+				for (int j = 0; j < n; ++j) {
+					double tmp = a[j*n + i];
+					a[j*n + i] = a[j*n + maxp];
+					a[j*n + maxp] = tmp;
+				}
+			}
+		}
+		for (int j = i + 1; j < n; ++j) {
+			a[i*n + j] /= a[i*n + i];
+			for (int k = i + 1; k < n; k++) {
+				a[k*n + j] -= a[i*n + j] * a[k*n + j];
+			}
+		}
+	}
+	return 0;
+
+}
+
 
 int main() {
 	//double *a, *b;
@@ -110,7 +177,7 @@ int main() {
 		std::cout << std::endl;
 	}
 
-	//testMine(a, b, n);
+	testMine(a, b, n);
 
 
 	//delete[] a;
