@@ -30,13 +30,16 @@ void testLapack(double *a, double *b, int n) {
 
 	info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, a, lda, ipiv);
 	//LAPACK_dgetrf(&n, &n, a, &lda, ipiv, &info);
-
+	if (info!=0) {
+		std::cout << "LAPACKE_dgetrf FAILED" << std::endl;
+	}
+	/*
 	for (int i = 0; i < n; ++i) {
 		double tmp = b[ipiv[i] - 1];
 		b[ipiv[i] - 1] = b[i];
 		b[i] = tmp;
 	}
-
+	*/
 
 	char     SIDE = 'L';
 	char     UPLO = 'L';
@@ -46,11 +49,17 @@ void testLapack(double *a, double *b, int n) {
 	double alpha = 1;
 
 	// forward  L(Ux) = B => y = Ux
-	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &m, &alpha, a, &n, b, &n);
+	info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
+	if (info!=0) {
+		std::cout << "First LAPACKE_dgetrs FAILED" << std::endl;
+	}
+	//dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &m, &alpha, a, &n, b, &n);
+	
+	
 	UPLO = 'U';
 	DIAG = 'N';
 	// backward Ux = y
-	dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &m, &alpha, a, &n, b, &n);
+	//dtrsm_(&SIDE, &UPLO, &TRANS, &DIAG, &n, &m, &alpha, a, &n, b, &n);
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	diff = HDdiff(begin, end);
