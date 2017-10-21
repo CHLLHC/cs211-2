@@ -106,9 +106,11 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 			ipiv[i] = maxp;
 			if (maxp != i) {
 				//save pivoting infomation
+				/*
 				int temp = ipiv[i];
 				ipiv[i] = ipiv[maxp];
 				ipiv[maxp] = temp;
+				*/
 				//swap rows
 				for (int j = 0; j < n; ++j) {
 					double tmp = a[j*n + i];
