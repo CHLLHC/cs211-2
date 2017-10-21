@@ -159,7 +159,7 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 
 int main(int argc, char *argv[]) {
 	double *a, *b;
-	int n, opt;
+	int n = 0, opt;
 
 	while ((opt = getopt(argc, argv, "n:")) != EOF) {
 		switch (opt) {
@@ -171,6 +171,10 @@ int main(int argc, char *argv[]) {
 			std::cerr << "Usage run -n <size>" << std::endl;
 			return -1;
 		}
+	}
+	if (n == 0) {
+		std::cerr << "Usage run -n <size>" << std::endl;
+		return -1;
 	}
 
 	srand(419);
