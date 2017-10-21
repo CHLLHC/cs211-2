@@ -37,16 +37,12 @@ void testLapack(double *a, double *b, int n) {
 		std::cout << "LAPACKE_dgetrf FAILED" << std::endl;
 		return;
 	}
-
 	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			std::cout << a[j*n + i] << " ";
-		}
-		std::cout << std::endl;
+		std::cout << ipiv[i] << " " << std::endl;
 	}
 	char TRANS = 'N';
 	int m = 1;
-	info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
+	//info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, TRANS, n, m, a, n, ipiv, b, n);
 	if (info != 0) {
 		std::cout << "LAPACKE_dgetrs FAILED" << std::endl;
 	}
@@ -69,10 +65,7 @@ void testMine(double *a, double *b, int n) {
 		return;
 	}
 	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			std::cout << a[j*n + i] << " ";
-		}
-		std::cout << std::endl;
+		std::cout << ipiv[i] << " " << std::endl;
 	}
 	char TRANS = 'N';
 	int m = 1;
@@ -95,12 +88,9 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 		std::cout << "ERROR, ONLY SUPPORT REGTANGLE MATRIX" << std::endl;
 		return -1;
 	}
-
 	for (int i = 0; i < n; i++) {
 		ipiv[i] = i + 1;
 	}
-
-
 	for (int i = 0; i < n - 1; ++i) {
 		int maxp = i;
 		int max = abs(a[i*n + i]);
@@ -136,7 +126,6 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 		}
 	}
 	return 0;
-
 }
 
 
