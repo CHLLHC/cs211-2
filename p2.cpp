@@ -131,7 +131,7 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 		for (int j = i + 1; j < n; ++j) {
 			a[i*n + j] /= a[i*n + i];
 			for (int k = i + 1; k < n; k++) {
-				a[k*n + j] -= a[i*n + j] * a[k*n + j];
+				a[k*n + j] -= a[i*n + j] * a[k*n + i];
 			}
 		}
 	}
@@ -177,12 +177,12 @@ int main() {
 	memcpy(bl, b, n * sizeof(double));
 
 	testLapack(al, bl, n);
-	for (int i = 0; i < n; ++i) {
+	/*for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			std::cout << al[i*n + j] << " ";
 		}
 		std::cout << std::endl;
-	}
+	}*/
 
 	testMine(a, b, n);
 
