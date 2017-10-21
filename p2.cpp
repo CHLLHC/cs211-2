@@ -105,7 +105,7 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 		int maxp = i;
 		int max = abs(a[i*n + i]);
 		for (int t = i + 1; t < n; ++t) {
-			if (abs(A[i*n + t]) > max) {
+			if (abs(a[i*n + t]) > max) {
 				maxp = t;
 				max = abs(a[i*n + t]);
 			}
