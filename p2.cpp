@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
 	double *a, *b;
 	int n, opt;
 
-	while ((opt = getopt(argc, argv, "n:")) != -1) {
+	while ((opt = getopt(argc, argv, "n:")) != EOF) {
 		switch (opt) {
 		case 'n':
 			n = atoi(optarg);
