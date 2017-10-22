@@ -89,7 +89,7 @@ void testBlcoked(double *a, double *b, int n) {
 
 	clock_gettime(CLOCK_MONOTONIC, &begin);
 
-	info = Blocked_dgetrf(n, n, a, lda, ipiv);
+	info = Blocked_dgetrf(n, n, a, lda, ipiv,n);
 	if (info != 0) {
 		std::cout << "mydgetrf FAILED" << std::endl;
 		return;
@@ -97,7 +97,7 @@ void testBlcoked(double *a, double *b, int n) {
 
 	char TRANS = 'N';
 	int m = 1;
-	info = mydtrsm(TRANS, n, m, a, n, ipiv, b, n);
+	//info = mydtrsm(TRANS, n, m, a, n, ipiv, b, n);
 	if (info != 0) {
 		std::cout << "mydtrsm FAILED" << std::endl;
 	}
@@ -293,7 +293,7 @@ int main(int argc, char *argv[]) {
 		b[i] = (double)((rand() << 15) | rand()) / (double)rand();
 	}*/
 
-	double *al, *bl, *ag, *gb;
+	double *al, *bl, *ag, *bg;
 	al = new double[n*n];
 	bl = new double[n];
 	ag = new double[n*n];
@@ -340,6 +340,8 @@ int main(int argc, char *argv[]) {
 	delete[] b;
 	delete[] al;
 	delete[] bl;
+	delete[] ag;
+	delete[] bg;
 
 	return 0;
 }
