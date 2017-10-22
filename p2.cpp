@@ -271,7 +271,7 @@ int main(int argc, char *argv[]) {
 	a = new double[n*n];
 	b = new double[n];
 
-	n = 9;
+	n = 3;
 	a[0] = 1;
 	a[1] = 2;
 	a[2] = 1;
