@@ -88,8 +88,8 @@ void testBlcoked(double *a, double *b, int n) {
 	int *ipiv = new int[n];
 
 	clock_gettime(CLOCK_MONOTONIC, &begin);
-
-	info = Blocked_dgetrf(n, n, a, lda, ipiv, n);
+	//=============================================================================================================LOOK<-HERE
+	info = Blocked_dgetrf(n, n, a, lda, ipiv, 2);
 	if (info != 0) {
 		std::cout << "mydgetrf FAILED" << std::endl;
 		return;
@@ -247,7 +247,14 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				//Update trailing submatrix
 				//DEGMM
 
-
+				for (int i = p+pb; i < row; ++i) {
+					for (int j = p + pb; j < col; ++j) {
+						for (int k = p; k < p + pb; ++k) {
+							//a[i][j] -= a[i][k]*a[k][j]
+							a[j*lda + i] -= a[k*lda + i] * a[j*lda + k];
+						}
+					}
+				}
 
 			}
 
@@ -317,10 +324,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	srand(419);
+	n = 3;
+
 	a = new double[n*n];
 	b = new double[n];
 
-	n = 3;
 	a[0] = 1;
 	a[1] = 2;
 	a[2] = 1;
