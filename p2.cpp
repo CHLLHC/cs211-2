@@ -90,14 +90,14 @@ void testMine(double *a, double *b, int n) {
 }
 
 //Sqeuence to time the my GEPP algorithm perfermance
-void testBlcoked(double *a, double *b, int n) {
+void testBlcoked(double *a, double *b, int n, int block_size) {
 	struct timespec begin, end, mid, diff;
 	int lda = n, info = 3;
 	int *ipiv = new int[n];
 
 	clock_gettime(CLOCK_MONOTONIC, &begin);
 	//=============================================================================================================LOOK<-HERE
-	info = Blocked_dgetrf(n, n, a, lda, ipiv, n);
+	info = Blocked_dgetrf(n, n, a, lda, ipiv, block_size);
 	if (info != 0) {
 		std::cout << "mydgetrf FAILED" << std::endl;
 		return;
@@ -338,12 +338,15 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 
 int main(int argc, char *argv[]) {
 	double *a, *b;
-	int n = 0, opt;
+	int n = 0, bs = 16, opt;
 
-	while ((opt = getopt(argc, argv, "n:")) != EOF) {
+	while ((opt = getopt(argc, argv, "n:b:")) != EOF) {
 		switch (opt) {
 		case 'n':
 			n = atoi(optarg);
+			break;
+		case 'b':
+			bs = atoi(optarg);
 			break;
 		case '?':
 		default:
@@ -395,7 +398,7 @@ int main(int argc, char *argv[]) {
 
 	testLapack(al, bl, n);
 	testMine(a, b, n);
-	testBlcoked(ag, bg, n);
+	testBlcoked(ag, bg, n,16);
 
 
 	double sumdiff = 0;
