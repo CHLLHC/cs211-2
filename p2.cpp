@@ -372,7 +372,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	std::cout << "SumDiff: " << sumdiff << std::endl;
-	/*
+	
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			std::cout << a[j*n + i] << " ";
@@ -386,7 +386,7 @@ int main(int argc, char *argv[]) {
 		}
 		std::cout << std::endl;
 	}
-	*/
+	
 	double sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
