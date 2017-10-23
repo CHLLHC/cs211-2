@@ -6,7 +6,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cmath>
 #include <algorithm>
 
 //declearation
@@ -117,11 +116,11 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 	ipiv[n - 1] = n;
 	for (int i = 0; i < n - 1; ++i) {
 		int maxp = i;
-		int max = abs(a[i*n + i]);
+		int max = std::abs(a[i*n + i]);
 		for (int t = i + 1; t < n; ++t) {
-			if (abs(a[i*n + t]) > max) {
+			if (std::abs(a[i*n + t]) > max) {
 				maxp = t;
-				max = abs(a[i*n + t]);
+				max = std::abs(a[i*n + t]);
 			}
 		}
 		if (max == 0) {
@@ -166,11 +165,11 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 		ipiv[row - 1] = row;//p+row-1=row-1
 		for (int i = p; i < row - 1; ++i) {
 			int maxp = i;
-			int max = abs(a[i*lda + i]);
+			int max = std::abs(a[i*lda + i]);
 			for (int t = i + 1; t < row; ++t) {
-				if (abs(a[i*lda + t]) > max) {
+				if (std::abs(a[i*lda + t]) > max) {
 					maxp = t;
-					max = abs(a[i*lda + t]);
+					max = std::abs(a[i*lda + t]);
 				}
 			}
 			if (max == 0) {
@@ -369,7 +368,7 @@ int main(int argc, char *argv[]) {
 	double sumdiff = 0;
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
-			sumdiff += abs(a[j*n + i] - ag[j*n + i]);
+			sumdiff += std::abs(a[j*n + i] - ag[j*n + i]);
 		}
 	}
 	std::cout << "SumDiff: " << sumdiff << std::endl;
