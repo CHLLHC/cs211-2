@@ -288,16 +288,16 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 										register double aik = a[ylda + i1], aik1 = a[y1lda + i1],
 											ai1k = a[ylda + i1 + 1], ai1k1 = a[y1lda + i1 + 1];
 										register double akj = a[xlda + k1], ak1j = a[xlda + k1 + 1],
-											akj1 = a[x1lda + k1)], ak1j1 = a[x1lda + k1 + 1];
+											akj1 = a[x1lda + k1], ak1j1 = a[x1lda + k1 + 1];
 										aij = aij - aik * akj + aik1 * ak1j;
 										ai1j = ai1j - ai1k * akj + ai1k1 * ak1j;
 										aij1 = aij1 - aik * akj1 + aik1 * ak1j1;
 										ai1j1 = ai1j1 - ai1k * akj1 + ai1k1 * ak1j1;
 									}
-									a[jlda + i1] = aij;
-									ai1j = a[jlda + i1 + 1] = ai1j;
-									a[j1lda + i1] = aij1;
-									a[j1lda + i1 + 1] = ai1j1;
+									a[xlda + i1] = aij;
+									ai1j = a[xlda + i1 + 1] = ai1j;
+									a[x1lda + i1] = aij1;
+									a[x1lda + i1 + 1] = ai1j1;
 								}
 						}
 
