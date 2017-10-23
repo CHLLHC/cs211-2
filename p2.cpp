@@ -271,7 +271,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				//DEGMM
 				//BLOCKED MM
 
-				/*
+
 				int B = 10;
 				int i, j, k, i1, j1, k1;
 				for (j = p + pb; j < col; j += B)
@@ -300,17 +300,18 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 									a[x1lda + i1 + 1] = ai1j1;
 								}
 						}
-				*/
-				
-				for (int j = p + pb; j < col; ++j) {
-					for (int i = p + pb; i < row; ++i) {
+
+				/*
+				for (int i = p + pb; i < row; ++i) {
+					for (int j = p + pb; j < col; ++j) {
 						for (int k = p; k < p + pb; ++k) {
 							//a[i][j] -= a[i][k]*a[k][j]
 							a[j*lda + i] -= a[k*lda + i] * a[j*lda + k];
 						}
 					}
 				}
-				
+				*/
+
 			}
 		}//if (p + pb < col)
 		clock_gettime(CLOCK_MONOTONIC, &end);
