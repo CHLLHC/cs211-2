@@ -271,13 +271,13 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				//DEGMM
 				//BLOCKED MM
 
-
+				/*
 				int B = 10;
 				int i, j, k, i1, j1, k1;
 				for (j = p + pb; j < col; j += B)
 					for (i = p + pb; i < row; i += B)
 						for (k = p; k < p + pb; k += B) {
-							/* B x B mini matrix multiplications */
+							// B x B mini matrix multiplications
 							for (i1 = i; i1 < i + B; i1 += 2)
 								for (j1 = j; j1 < j + B; j1 += 2) {
 									register int xlda = j1*lda, x1lda = xlda + lda;
@@ -300,9 +300,8 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 									a[x1lda + i1 + 1] = ai1j1;
 								}
 						}
-
-				/*
-
+				*/
+				
 				for (int j = p + pb; j < col; ++j) {
 					for (int i = p + pb; i < row; ++i) {
 						for (int k = p; k < p + pb; ++k) {
@@ -311,7 +310,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 						}
 					}
 				}
-				*/
+				
 			}
 		}//if (p + pb < col)
 		clock_gettime(CLOCK_MONOTONIC, &end);
