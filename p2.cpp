@@ -89,7 +89,7 @@ void testBlcoked(double *a, double *b, int n) {
 
 	clock_gettime(CLOCK_MONOTONIC, &begin);
 
-	info = Blocked_dgetrf(n, n, a, lda, ipiv,n);
+	info = Blocked_dgetrf(n, n, a, lda, ipiv, n);
 	if (info != 0) {
 		std::cout << "mydgetrf FAILED" << std::endl;
 		return;
@@ -198,12 +198,61 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 		}
 		////END DGETRF2
 
+		//Pivot indices are correct, no need to do a correction
+
+		//Apply interchanges to columns 1:p-1
+
+		//dlawsp
+		//           K1      K2
+		for (int i = p; i < p + pb; ++i) {
+			if (ipiv[i] != i) {
+				//swap rows
+				//                 col of A
+				for (int j = 0; j < p; ++j) {
+					double tmp = a[j*lda + i];
+					a[j*lda + i] = a[j*lda + ipiv[i]];
+					a[j*lda + ipiv[i]] = tmp;
+				}
+			}
+		}
+
+		//Line 197
+		if (p + pb < col) {
+
+			//Apply interchanges to columns p+pb:n
+			//dlawsp
+			//          K1        K2
+			for (int i = p; i < p + pb; ++i) {
+				if (ipiv[i] != i) {
+					//swap rows
+					for (int j = p + pb; j < col; ++j) {
+						double tmp = a[j*lda + i];
+						a[j*lda + i] = a[j*lda + ipiv[i]];
+						a[j*lda + ipiv[i]] = tmp;
+					}
+				}
+			}
+
+			//Compute block row of U
+			//Lower triangular dtrsm
+			for (int j = p + pb; j < col; ++j) { //col of X b
+				for (int i = p; i < p + pb; ++i) {  //row of X b
+					for (int k = p; k < i; ++k) {
+						a[j*lda + i] -= a[j*lda + k] * a[k*lba + i];
+					}
+				}
+			}
+
+			if (p + pb < row) {
+				//Update trailing submatrix
+				//DEGMM
 
 
 
+			}
 
 
-
+		}//if (p + pb < col)
 
 	}
 	return 0;
@@ -279,7 +328,7 @@ int main(int argc, char *argv[]) {
 	a[4] = 1;
 	a[5] = 1;
 	a[6] = 3;
-	a[7] = 1; 
+	a[7] = 1;
 	a[8] = 1;
 	b[0] = 1;
 	b[1] = 1;
