@@ -417,7 +417,7 @@ int main(int argc, char *argv[]) {
 	memcpy(bg, b, n * sizeof(double));
 
 	testLapack(al, bl, n);
-	testMine(a, b, n);
+	//testMine(a, b, n);
 	testBlcoked(ag, bg, n, 16);
 
 	double sumOfSquare = 0;
