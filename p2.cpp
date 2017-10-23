@@ -238,7 +238,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 			for (int j = p + pb; j < col; ++j) { //col of X b
 				for (int i = p; i < p + pb; ++i) {  //row of X b
 					for (int k = p; k < i; ++k) {
-						a[j*lda + i] -= a[j*lda + k] * a[k*lba + i];
+						a[j*lda + i] -= a[j*lda + k] * a[k*lda + i];
 					}
 				}
 			}
