@@ -97,7 +97,7 @@ void testBlcoked(double *a, double *b, int n) {
 
 	char TRANS = 'N';
 	int m = 1;
-	//info = mydtrsm(TRANS, n, m, a, n, ipiv, b, n);
+	info = mydtrsm(TRANS, n, m, a, n, ipiv, b, n);
 	if (info != 0) {
 		std::cout << "mydtrsm FAILED" << std::endl;
 	}
@@ -246,7 +246,6 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 			if (p + pb < row) {
 				//Update trailing submatrix
 				//DEGMM
-
 				for (int i = p + pb; i < row; ++i) {
 					for (int j = p + pb; j < col; ++j) {
 						for (int k = p; k < p + pb; ++k) {
@@ -255,12 +254,8 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 						}
 					}
 				}
-
 			}
-
-
 		}//if (p + pb < col)
-
 	}
 	return 0;
 }
@@ -372,7 +367,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	std::cout << "SumDiff: " << sumdiff << std::endl;
-
+	/*
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			std::cout << a[j*n + i] << " ";
@@ -386,7 +381,7 @@ int main(int argc, char *argv[]) {
 		}
 		std::cout << std::endl;
 	}
-
+	*/
 	double sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
