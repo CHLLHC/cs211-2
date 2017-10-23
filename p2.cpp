@@ -89,7 +89,7 @@ void testBlcoked(double *a, double *b, int n) {
 
 	clock_gettime(CLOCK_MONOTONIC, &begin);
 	//=============================================================================================================LOOK<-HERE
-	info = Blocked_dgetrf(n, n, a, lda, ipiv, 2);
+	info = Blocked_dgetrf(n, n, a, lda, ipiv, n);
 	if (info != 0) {
 		std::cout << "mydgetrf FAILED" << std::endl;
 		return;
@@ -117,7 +117,7 @@ int mydgetrf(int row, int col, double *a, int lda, int *ipiv) {
 	ipiv[n - 1] = n;
 	for (int i = 0; i < n - 1; ++i) {
 		int maxp = i;
-		int max = std::abs(a[i*n + i]);
+		double max = std::abs(a[i*n + i]);
 		for (int t = i + 1; t < n; ++t) {
 			if (std::abs(a[i*n + t]) > max) {
 				maxp = t;
@@ -164,9 +164,9 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 		int rowToGo = row - p;
 		int colToGo = pb;
 		ipiv[row - 1] = row;//p+row-1=row-1
-		for (int i = p; i < row - 1; ++i) {
+		for (int i = p; i < std::min(row - 1, p + pb); ++i) {
 			int maxp = i;
-			int max = std::abs(a[i*lda + i]);
+			double max = std::abs(a[i*lda + i]);
 			for (int t = i + 1; t < row; ++t) {
 				if (std::abs(a[i*lda + t]) > max) {
 					maxp = t;
@@ -205,13 +205,13 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 		//dlawsp
 		//           K1      K2
 		for (int i = p; i < p + pb; ++i) {
-			if (ipiv[i] != i) {
+			if (ipiv[i] != i + 1) {
 				//swap rows
 				//                 col of A
 				for (int j = 0; j < p; ++j) {
 					double tmp = a[j*lda + i];
-					a[j*lda + i] = a[j*lda + ipiv[i]];
-					a[j*lda + ipiv[i]] = tmp;
+					a[j*lda + i] = a[j*lda + ipiv[i] - 1];
+					a[j*lda + ipiv[i] - 1] = tmp;
 				}
 			}
 		}
@@ -223,12 +223,12 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 			//dlawsp
 			//          K1        K2
 			for (int i = p; i < p + pb; ++i) {
-				if (ipiv[i] != i) {
+				if (ipiv[i] != i + 1) {
 					//swap rows
 					for (int j = p + pb; j < col; ++j) {
 						double tmp = a[j*lda + i];
-						a[j*lda + i] = a[j*lda + ipiv[i]];
-						a[j*lda + ipiv[i]] = tmp;
+						a[j*lda + i] = a[j*lda + ipiv[i] - 1];
+						a[j*lda + ipiv[i] - 1] = tmp;
 					}
 				}
 			}
@@ -247,7 +247,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				//Update trailing submatrix
 				//DEGMM
 
-				for (int i = p+pb; i < row; ++i) {
+				for (int i = p + pb; i < row; ++i) {
 					for (int j = p + pb; j < col; ++j) {
 						for (int k = p; k < p + pb; ++k) {
 							//a[i][j] -= a[i][k]*a[k][j]
@@ -324,11 +324,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	srand(419);
-	n = 3;
+	//n = 3;
 
 	a = new double[n*n];
 	b = new double[n];
-	
+	/*
 	a[0] = 1;
 	a[1] = 2;
 	a[2] = 1;
@@ -341,15 +341,14 @@ int main(int argc, char *argv[]) {
 	b[0] = 1;
 	b[1] = 1;
 	b[2] = 1;
+	*/
 
-	/*
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			a[i*n + j] = (double)((rand() << 15) | rand()) / (double)rand();
 		}
 		b[i] = (double)((rand() << 15) | rand()) / (double)rand();
 	}
-	*/
 
 	double *al, *bl, *ag, *bg;
 	al = new double[n*n];
@@ -373,7 +372,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	std::cout << "SumDiff: " << sumdiff << std::endl;
-	
+
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			std::cout << a[j*n + i] << " ";
@@ -387,7 +386,7 @@ int main(int argc, char *argv[]) {
 		}
 		std::cout << std::endl;
 	}
-	
+
 	double sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
