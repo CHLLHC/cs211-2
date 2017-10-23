@@ -269,8 +269,8 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 			if (p + pb < row) {
 				//Update trailing submatrix
 				//DEGMM
-				for (int i = p + pb; i < row; ++i) {
-					for (int j = p + pb; j < col; ++j) {
+				for (int j = p + pb; j < col; ++j) {
+					for (int i = p + pb; i < row; ++i) {
 						for (int k = p; k < p + pb; ++k) {
 							//a[i][j] -= a[i][k]*a[k][j]
 							a[j*lda + i] -= a[k*lda + i] * a[j*lda + k];
@@ -350,34 +350,19 @@ int main(int argc, char *argv[]) {
 			break;
 		case '?':
 		default:
-			std::cerr << "Usage run -n <size>" << std::endl;
+			std::cerr << "Usage run -n <size> [-b <block size>]" << std::endl;
 			return -1;
 		}
 	}
 	if (n == 0) {
-		std::cerr << "Usage run -n <size>" << std::endl;
+		std::cerr << "Usage run -n <size> [-b <block size>]" << std::endl;
 		return -1;
 	}
 
 	srand(419);
-	//n = 3;
 
 	a = new double[n*n];
 	b = new double[n];
-	/*
-	a[0] = 1;
-	a[1] = 2;
-	a[2] = 1;
-	a[3] = 2;
-	a[4] = 1;
-	a[5] = 1;
-	a[6] = 3;
-	a[7] = 1;
-	a[8] = 1;
-	b[0] = 1;
-	b[1] = 1;
-	b[2] = 1;
-	*/
 
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
@@ -398,31 +383,8 @@ int main(int argc, char *argv[]) {
 
 	testLapack(al, bl, n);
 	testMine(a, b, n);
-	testBlcoked(ag, bg, n,16);
+	testBlcoked(ag, bg, n, 16);
 
-
-	double sumdiff = 0;
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			sumdiff += std::abs(a[j*n + i] - ag[j*n + i]);
-		}
-	}
-	std::cout << "SumDiff: " << sumdiff << std::endl;
-	/*
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			std::cout << a[j*n + i] << " ";
-		}
-		std::cout << std::endl;
-	}
-
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			std::cout << ag[j*n + i] << " ";
-		}
-		std::cout << std::endl;
-	}
-	*/
 	double sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
