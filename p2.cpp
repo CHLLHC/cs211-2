@@ -83,7 +83,7 @@ void testMine(double *a, double *b, int n) {
 
 //Sqeuence to time the my GEPP algorithm perfermance
 void testBlcoked(double *a, double *b, int n) {
-	struct timespec begin, end, diff;
+	struct timespec begin, end, mid, diff;
 	int lda = n, info = 3;
 	int *ipiv = new int[n];
 
@@ -94,7 +94,7 @@ void testBlcoked(double *a, double *b, int n) {
 		std::cout << "mydgetrf FAILED" << std::endl;
 		return;
 	}
-
+	clock_gettime(CLOCK_MONOTONIC, &mid);
 	char TRANS = 'N';
 	int m = 1;
 	info = mydtrsm(TRANS, n, m, a, n, ipiv, b, n);
@@ -103,6 +103,10 @@ void testBlcoked(double *a, double *b, int n) {
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
+	diff = HDdiff(begin, mid);
+	printf("My Blocked GEPP, First Half, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
+	diff = HDdiff(mid, end);
+	printf("My Blocked GEPP, Second Half, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
 	diff = HDdiff(begin, end);
 	printf("My Blocked GEPP, n=%d, Time:%ld seconds and %ld nanoseconds.\n", n, diff.tv_sec, diff.tv_nsec);
 }
