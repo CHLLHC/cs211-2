@@ -274,11 +274,11 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 			}
 		}//if (p + pb < col)
 		clock_gettime(CLOCK_MONOTONIC, &end);
-		st1 = st1+HDdiff(begin, cp1);
-		st2 = st2 + HDdiff(cp1, cp2);
-		st3 = st3 + HDdiff(cp2, cp3);
-		st4 = st4 + HDdiff(cp3, cp4);
-		st5 = st5 + HDdiff(cp4, end);
+		st1 = HDadd(st1, HDdiff(begin, cp1));
+		st2 = HDadd(st2, HDdiff(cp1, cp2));
+		st3 = HDadd(st3, HDdiff(cp2, cp3));
+		st4 = HDadd(st4, HDdiff(cp3, cp4));
+		st5 = HDadd(st5, HDdiff(cp4, end));
 	}
 
 	printf("Stage 1, Time:%ld seconds and %ld nanoseconds.\n", st1.tv_sec, st1.tv_nsec);
