@@ -270,8 +270,8 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				//Update trailing submatrix
 				//DEGMM
 				for (int j = p + pb; j < col; ++j) {
-					for (int i = p + pb; i < row; ++i) {
-						for (int k = p; k < p + pb; ++k) {
+					for (int k = p; k < p + pb; ++k) {
+						for (int i = p + pb; i < row; ++i) {
 							//a[i][j] -= a[i][k]*a[k][j]
 							a[j*lda + i] -= a[k*lda + i] * a[j*lda + k];
 						}
