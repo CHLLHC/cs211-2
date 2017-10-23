@@ -324,11 +324,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	srand(419);
-	n = 3;
+	//n = 3;
 
 	a = new double[n*n];
 	b = new double[n];
-
+	/*
 	a[0] = 1;
 	a[1] = 2;
 	a[2] = 1;
@@ -341,14 +341,14 @@ int main(int argc, char *argv[]) {
 	b[0] = 1;
 	b[1] = 1;
 	b[2] = 1;
-
-	/*
+	*/
+	
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			a[i*n + j] = (double)((rand() << 15) | rand()) / (double)rand();
 		}
 		b[i] = (double)((rand() << 15) | rand()) / (double)rand();
-	}*/
+	}
 
 	double *al, *bl, *ag, *bg;
 	al = new double[n*n];
@@ -365,6 +365,14 @@ int main(int argc, char *argv[]) {
 	testBlcoked(ag, bg, n);
 
 
+	double sumdiff = 0;
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			sumdiff += abs(a[j*n + i] - ag[j*n + i]);
+		}
+	}
+	std::cout << "SumDiff: " << sumdiff << std::endl;
+	/*
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			std::cout << a[j*n + i] << " ";
@@ -378,7 +386,7 @@ int main(int argc, char *argv[]) {
 		}
 		std::cout << std::endl;
 	}
-
+	*/
 	double sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
