@@ -171,6 +171,12 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 	}
 
 	struct timespec st1, st2, st3, st4, st5;
+	st1.tv_nsec = 0;
+	st1.tv_sec = 0;
+	st2 = st1;
+	st3 = st1;
+	st4 = st1;
+	st5 = st1;
 
 	for (int p = 0; p < row; p += block_size) {
 		int pb = std::min(row - p, block_size);
@@ -276,9 +282,11 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 		clock_gettime(CLOCK_MONOTONIC, &end);
 		st1 = HDadd(st1, HDdiff(begin, cp1));
 		st2 = HDadd(st2, HDdiff(cp1, cp2));
-		st3 = HDadd(st3, HDdiff(cp2, cp3));
-		st4 = HDadd(st4, HDdiff(cp3, cp4));
-		st5 = HDadd(st5, HDdiff(cp4, end));
+		if (inthere) {
+			st3 = HDadd(st3, HDdiff(cp2, cp3));
+			st4 = HDadd(st4, HDdiff(cp3, cp4));
+			st5 = HDadd(st5, HDdiff(cp4, end));
+		}
 	}
 
 	printf("Stage 1, Time:%ld seconds and %ld nanoseconds.\n", st1.tv_sec, st1.tv_nsec);
