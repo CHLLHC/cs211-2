@@ -175,7 +175,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 	for (int p = 0; p < row; p += block_size) {
 		int pb = std::min(row - p, block_size);
 		struct timespec begin, end, cp1, cp2, cp3, cp4, diff;
-		clock_gettime(CLOCK_MONOTONIC, &start);
+		clock_gettime(CLOCK_MONOTONIC, &begin);
 		////DGETRF2
 		int rowToGo = row - p;
 		int colToGo = pb;
