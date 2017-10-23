@@ -29,6 +29,14 @@ struct timespec HDdiff(struct timespec start, struct timespec end)
 	return temp;
 }
 
+struct timespec HDadd(struct timespec a, struct timespec b)
+{
+	struct timespec temp;
+	temp.tv_nsec = (a.tv_nsec + b.tv_nsec) % 1000000000;
+	temp.tv_sec = a.tv_sec + b.tv_sec + (a.tv_nsec + b.tv_nsec) / 1000000000;
+	return temp;
+}
+
 //Sqeuence to time the LAPACK perfermance
 void testLapack(double *a, double *b, int n) {
 	struct timespec begin, end, diff;
@@ -161,9 +169,13 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 		std::cout << "ERROR, ONLY SUPPORT REGTANGLE MATRIX" << std::endl;
 		return -1;
 	}
+
+	struct timespec st1, st2, st3, st4, st5;
+
 	for (int p = 0; p < row; p += block_size) {
 		int pb = std::min(row - p, block_size);
-
+		struct timespec begin, end, cp1, cp2, cp3, cp4, diff;
+		clock_gettime(CLOCK_MONOTONIC, &start);
 		////DGETRF2
 		int rowToGo = row - p;
 		int colToGo = pb;
@@ -201,7 +213,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 			}
 		}
 		////END DGETRF2
-
+		clock_gettime(CLOCK_MONOTONIC, &cp1);
 		//Pivot indices are correct, no need to do a correction
 
 		//Apply interchanges to columns 1:p-1
@@ -219,10 +231,11 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				}
 			}
 		}
-
+		clock_gettime(CLOCK_MONOTONIC, &cp2);
+		bool inthere = false;
 		//Line 197
 		if (p + pb < col) {
-
+			inthere = true;
 			//Apply interchanges to columns p+pb:n
 			//dlawsp
 			//          K1        K2
@@ -236,7 +249,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 					}
 				}
 			}
-
+			clock_gettime(CLOCK_MONOTONIC, &cp3);
 			//Compute block row of U
 			//Lower triangular dtrsm
 			for (int j = p + pb; j < col; ++j) { //col of X b
@@ -246,7 +259,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 					}
 				}
 			}
-
+			clock_gettime(CLOCK_MONOTONIC, &cp4);
 			if (p + pb < row) {
 				//Update trailing submatrix
 				//DEGMM
@@ -260,7 +273,20 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				}
 			}
 		}//if (p + pb < col)
+		clock_gettime(CLOCK_MONOTONIC, &end);
+		st1 = st1+HDdiff(begin, cp1);
+		st2 = st2 + HDdiff(cp1, cp2);
+		st3 = st3 + HDdiff(cp2, cp3);
+		st4 = st4 + HDdiff(cp3, cp4);
+		st5 = st5 + HDdiff(cp4, end);
 	}
+
+	printf("Stage 1, Time:%ld seconds and %ld nanoseconds.\n", st1.tv_sec, st1.tv_nsec);
+	printf("Stage 2, Time:%ld seconds and %ld nanoseconds.\n", st2.tv_sec, st2.tv_nsec);
+	printf("Stage 3, Time:%ld seconds and %ld nanoseconds.\n", st3.tv_sec, st3.tv_nsec);
+	printf("Stage 4, Time:%ld seconds and %ld nanoseconds.\n", st4.tv_sec, st4.tv_nsec);
+	printf("Stage 5, Time:%ld seconds and %ld nanoseconds.\n", st5.tv_sec, st5.tv_nsec);
+
 	return 0;
 }
 
