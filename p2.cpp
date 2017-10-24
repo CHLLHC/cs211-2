@@ -180,8 +180,8 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 
 	for (int p = 0; p < row; p += block_size) {
 		int pb = std::min(row - p, block_size);
-		struct timespec begin, end, cp1, cp2, cp3, cp4, diff;
-		clock_gettime(CLOCK_MONOTONIC, &begin);
+		//struct timespec begin, end, cp1, cp2, cp3, cp4, diff;
+		//clock_gettime(CLOCK_MONOTONIC, &begin);
 		////DGETRF2
 		int rowToGo = row - p;
 		int colToGo = pb;
@@ -219,7 +219,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 			}
 		}
 		////END DGETRF2
-		clock_gettime(CLOCK_MONOTONIC, &cp1);
+		//clock_gettime(CLOCK_MONOTONIC, &cp1);
 		//Pivot indices are correct, no need to do a correction
 
 		//Apply interchanges to columns 1:p-1
@@ -237,7 +237,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				}
 			}
 		}
-		clock_gettime(CLOCK_MONOTONIC, &cp2);
+		//clock_gettime(CLOCK_MONOTONIC, &cp2);
 		bool inthere = false;
 		//Line 197
 		if (p + pb < col) {
@@ -255,7 +255,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 					}
 				}
 			}
-			clock_gettime(CLOCK_MONOTONIC, &cp3);
+			//clock_gettime(CLOCK_MONOTONIC, &cp3);
 			//Compute block row of U
 			//Lower triangular dtrsm
 			for (int j = p + pb; j < col; ++j) { //col of X b
@@ -265,52 +265,52 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 					}
 				}
 			}
-			clock_gettime(CLOCK_MONOTONIC, &cp4);
+			//clock_gettime(CLOCK_MONOTONIC, &cp4);
 			if (p + pb < row) {
 				//Update trailing submatrix
 				//DEGMM
 				//BLOCKED MM
 
-				//int B = 64;
-				//for (int j = p + pb; j < col; j += B)
-				//	for (int k = p; k < p + pb; k += B)
-				//		for (int i = p + pb; i < row; i += B) {
-				//			int j2 = std::min(j + B, col);
-				//			int i2 = std::min(i + B, row);
-				//			int k2 = std::min(k + B, p + pb);
-				//			for (int j1 = j; j1 < j2; ++j1)
-				//				for (int k1 = k; k1 < k2; ++k1)
-				//					for (int i1 = i; i1 < i2; ++i1)
-				//						//a[i][j] -= a[i][k]*a[k][j]
-				//						a[j1*lda + i1] -= a[k1*lda + i1] * a[j1*lda + k1];
-				//		}
-
-				for (int j = p + pb; j < col; j++) {
-					for (int k = p; k < p + pb; k++) {
-						for (int i = p + pb; i < row; i++) {
-							a[j*lda + i] -= a[k*lda + i] * a[j*lda + k];
+				int B = 64;
+				for (int j = p + pb; j < col; j += B)
+					for (int k = p; k < p + pb; k += B)
+						for (int i = p + pb; i < row; i += B) {
+							int j2 = std::min(j + B, col);
+							int i2 = std::min(i + B, row);
+							int k2 = std::min(k + B, p + pb);
+							for (int j1 = j; j1 < j2; ++j1)
+								for (int k1 = k; k1 < k2; ++k1)
+									for (int i1 = i; i1 < i2; ++i1)
+										//a[i][j] -= a[i][k]*a[k][j]
+										a[j1*lda + i1] -= a[k1*lda + i1] * a[j1*lda + k1];
 						}
-					}
-				}
+
+				//for (int j = p + pb; j < col; j++) {
+				//	for (int k = p; k < p + pb; k++) {
+				//		for (int i = p + pb; i < row; i++) {
+				//			a[j*lda + i] -= a[k*lda + i] * a[j*lda + k];
+				//		}
+				//	}
+				//}
 
 
 			}
 		}//if (p + pb < col)
-		clock_gettime(CLOCK_MONOTONIC, &end);
-		st1 = HDadd(st1, HDdiff(begin, cp1));
-		st2 = HDadd(st2, HDdiff(cp1, cp2));
-		if (inthere) {
-			st3 = HDadd(st3, HDdiff(cp2, cp3));
-			st4 = HDadd(st4, HDdiff(cp3, cp4));
-			st5 = HDadd(st5, HDdiff(cp4, end));
-		}
+		//clock_gettime(CLOCK_MONOTONIC, &end);
+		//st1 = HDadd(st1, HDdiff(begin, cp1));
+		//st2 = HDadd(st2, HDdiff(cp1, cp2));
+		//if (inthere) {
+		//	st3 = HDadd(st3, HDdiff(cp2, cp3));
+		//	st4 = HDadd(st4, HDdiff(cp3, cp4));
+		//	st5 = HDadd(st5, HDdiff(cp4, end));
+		//}
 	}
 
-	printf("Stage 1, Time:%ld seconds and %ld nanoseconds.\n", st1.tv_sec, st1.tv_nsec);
-	printf("Stage 2, Time:%ld seconds and %ld nanoseconds.\n", st2.tv_sec, st2.tv_nsec);
-	printf("Stage 3, Time:%ld seconds and %ld nanoseconds.\n", st3.tv_sec, st3.tv_nsec);
-	printf("Stage 4, Time:%ld seconds and %ld nanoseconds.\n", st4.tv_sec, st4.tv_nsec);
-	printf("Stage 5, Time:%ld seconds and %ld nanoseconds.\n", st5.tv_sec, st5.tv_nsec);
+	//printf("Stage 1, Time:%ld seconds and %ld nanoseconds.\n", st1.tv_sec, st1.tv_nsec);
+	//printf("Stage 2, Time:%ld seconds and %ld nanoseconds.\n", st2.tv_sec, st2.tv_nsec);
+	//printf("Stage 3, Time:%ld seconds and %ld nanoseconds.\n", st3.tv_sec, st3.tv_nsec);
+	//printf("Stage 4, Time:%ld seconds and %ld nanoseconds.\n", st4.tv_sec, st4.tv_nsec);
+	//printf("Stage 5, Time:%ld seconds and %ld nanoseconds.\n", st5.tv_sec, st5.tv_nsec);
 
 	return 0;
 }
@@ -355,7 +355,7 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 
 int main(int argc, char *argv[]) {
 	double *a, *b;
-	int n = 0, bs = 16, opt;
+	int n = 0, bs = 32, opt;
 
 	while ((opt = getopt(argc, argv, "n:b:")) != EOF) {
 		switch (opt) {
@@ -399,17 +399,17 @@ int main(int argc, char *argv[]) {
 	memcpy(bg, b, n * sizeof(double));
 
 	testLapack(al, bl, n);
-	//testMine(a, b, n);
+	testMine(a, b, n);
 	testBlcoked(ag, bg, n, bs);
 	double sumOfSquare = 0;
 	double norm;
-	/*
+	
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
 	}
 	norm = sqrt(sumOfSquare);
 	std::cout << "The norm of difference between LAPACK and My unoptimized algorithm is " << std::scientific << norm << std::endl;
-	*/
+	
 	sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (bg[i] - bl[i])*(bg[i] - bl[i]);
