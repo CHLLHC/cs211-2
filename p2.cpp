@@ -271,7 +271,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				//DEGMM
 				//BLOCKED MM
 
-				int B = 16;
+				int B = 64;
 				for (int j = p + pb; j < col; j += B)
 					for (int k = p; k < p + pb; k += B)
 						for (int i = p + pb; i < row; i += B) {
