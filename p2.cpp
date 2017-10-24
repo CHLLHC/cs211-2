@@ -355,9 +355,9 @@ int mydtrsm(char trans, int n, int nrhs, double *a, int lda, int* ipiv, double *
 
 int main(int argc, char *argv[]) {
 	double *a, *b;
-	int n = 0, bs = 20, opt;
+	int n = 0, bs = 16, opt;
 
-	while ((opt = getopt(argc, argv, "n:b::")) != EOF) {
+	while ((opt = getopt(argc, argv, "n:b:")) != EOF) {
 		switch (opt) {
 		case 'n':
 			n = atoi(optarg);
@@ -366,7 +366,6 @@ int main(int argc, char *argv[]) {
 			bs = atoi(optarg);
 			break;
 		case '?':
-		case ':':
 		default:
 			std::cerr << "Usage run -n <size> [-b <block size>]" << std::endl;
 			return -1;
@@ -401,7 +400,7 @@ int main(int argc, char *argv[]) {
 
 	//testLapack(al, bl, n);
 	//testMine(a, b, n);
-	testBlcoked(ag, bg, n, 16);
+	testBlcoked(ag, bg, n, bs);
 
 	/*double sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
