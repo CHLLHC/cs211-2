@@ -272,7 +272,6 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				//BLOCKED MM
 
 				int B = 10;
-				std::cout << p << ',' << pb << ',' << row << ',' << col << std::endl;
 				for (int i = p + pb; i < row; i += B) {
 					for (int j = p + pb; j < col; j += B) {
 						for (int k = p; k < p + pb; k += B) {
@@ -401,24 +400,24 @@ int main(int argc, char *argv[]) {
 	memcpy(ag, a, n*n * sizeof(double));
 	memcpy(bg, b, n * sizeof(double));
 
-	//testLapack(al, bl, n);
+	testLapack(al, bl, n);
 	//testMine(a, b, n);
 	testBlcoked(ag, bg, n, bs);
-
-	/*double sumOfSquare = 0;
+	/*
+	double sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
 	}
 	double norm = sqrt(sumOfSquare);
 	std::cout << "The norm of difference between LAPACK and My unoptimized algorithm is " << std::scientific << norm << std::endl;
-
+	*/
 	sumOfSquare = 0;
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (bg[i] - bl[i])*(bg[i] - bl[i]);
 	}
 	norm = sqrt(sumOfSquare);
 	std::cout << "The norm of difference between LAPACK and My OPTIMIZED algorithm is " << std::scientific << norm << std::endl;
-	*/
+	
 	delete[] a;
 	delete[] b;
 	delete[] al;
