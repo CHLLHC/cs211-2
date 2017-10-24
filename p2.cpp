@@ -273,17 +273,20 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 
 				int B = 10;
 				std::cout << p << ',' << pb << ',' << row << ',' << col << std::endl;
-				for (int i = p + pb; i < row; i++) {
-					for (int j = p + pb; j < col; j++) {
+				for (int i = p + pb; i < row; i += B) {
+					for (int j = p + pb; j < col; j += B) {
 						for (int k = p; k < p + pb; k += B) {
-							for (int k1 = k; k1 < k + B; ++k1) {
-								//a[i][j] -= a[i][k]*a[k][j]
-								a[j*lda + i] -= a[k1*lda + i] * a[j*lda + k1];
+							for (int i1 = i; i1 < i + B; ++i1) {
+								for (int j1 = j; j1 < j + B; ++j1) {
+									for (int k1 = k; k1 < k + B; ++k1) {
+										//a[i][j] -= a[i][k]*a[k][j]
+										a[j1*lda + i1] -= a[k1*lda + i1] * a[j1*lda + k1];
+									}
+								}
 							}
 						}
 					}
 				}
-
 				/*
 				for (int i = p + pb; i < row; ++i) {
 					for (int j = p + pb; j < col; ++j) {
