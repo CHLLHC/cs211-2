@@ -403,12 +403,13 @@ int main(int argc, char *argv[]) {
 	testLapack(al, bl, n);
 	//testMine(a, b, n);
 	testBlcoked(ag, bg, n, bs);
-	/*
 	double sumOfSquare = 0;
+	double norm;
+	/*
 	for (int i = 0; i < n; ++i) {
 		sumOfSquare += (b[i] - bl[i])*(b[i] - bl[i]);
 	}
-	double norm = sqrt(sumOfSquare);
+	norm = sqrt(sumOfSquare);
 	std::cout << "The norm of difference between LAPACK and My unoptimized algorithm is " << std::scientific << norm << std::endl;
 	*/
 	sumOfSquare = 0;
