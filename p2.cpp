@@ -278,27 +278,11 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 					for (i = p + pb; i < row; i += B)
 						for (k = p; k < p + pb; k += B) {
 							// B x B mini matrix multiplications
-							for (i1 = i; i1 < i + B; i1 += 2)
-								for (j1 = j; j1 < j + B; j1 += 2) {
-									register int xlda = j1*lda, x1lda = xlda + lda;
-									register double aij = a[xlda + i1], ai1j = a[xlda + i1 + 1],
-										aij1 = a[x1lda + i1], ai1j1 = a[x1lda + i1 + 1];
-									for (k1 = k; k1 < k + B; k1 += 2) {
-										register int ylda = k1*lda, y1lda = ylda + lda;
-										register double aik = a[ylda + i1], aik1 = a[y1lda + i1],
-											ai1k = a[ylda + i1 + 1], ai1k1 = a[y1lda + i1 + 1];
-										register double akj = a[xlda + k1], ak1j = a[xlda + k1 + 1],
-											akj1 = a[x1lda + k1], ak1j1 = a[x1lda + k1 + 1];
-										aij = aij - aik * akj + aik1 * ak1j;
-										ai1j = ai1j - ai1k * akj + ai1k1 * ak1j;
-										aij1 = aij1 - aik * akj1 + aik1 * ak1j1;
-										ai1j1 = ai1j1 - ai1k * akj1 + ai1k1 * ak1j1;
+							for (i1 = i; i1 < i + B; i1++)
+								for (j1 = j; j1 < j + B; j1++)
+									for (k1 = k; k1 < k + B; k1++) {
+										a[j1*lda + i1] -= a[k1*lda + i1] * a[j1*lda + k1];
 									}
-									a[xlda + i1] = aij;
-									ai1j = a[xlda + i1 + 1] = ai1j;
-									a[x1lda + i1] = aij1;
-									a[x1lda + i1 + 1] = ai1j1;
-								}
 						}
 
 				/*
