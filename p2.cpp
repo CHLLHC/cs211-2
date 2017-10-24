@@ -272,6 +272,7 @@ int Blocked_dgetrf(int row, int col, double *a, int lda, int *ipiv, int block_si
 				//BLOCKED MM
 
 				int B = 10;
+				std::cout << p << ',' << pb << ',' << row << ',' << col << std::endl;
 				for (int i = p + pb; i < row; i++) {
 					for (int j = p + pb; j < col; j++) {
 						for (int k = p; k < p + pb; k += B) {
